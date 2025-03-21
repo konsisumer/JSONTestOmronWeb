@@ -3,11 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Web Project</title>
+    <title>Display HTTP Response</title>
     <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
-    <h1>Welcome to My Web Project</h1>
+    <h1>HTTP Response from Kama FlexFold52</h1>
+  
+    <h2>Select State</h2>
+    <form id="stateForm">
+        <label>
+            <input type="radio" name="state" value="all" checked>
+            All
+        </label>
+        <label>
+            <input type="radio" name="state" value="machine">
+            Machine
+        </label>
+        <label>
+            <input type="radio" name="state" value="job">
+            Job
+        </label>
+    </form>
+
+    <h2>Current URL</h2>
+    <pre id="currentUrl"></pre>
+
+    <h2>Status Code</h2>
+    <pre id="status"></pre>
+
+    <h2>Headers</h2>
+    <pre id="headers"></pre>
+
+    <h2>Content</h2>
+    <pre id="content"></pre>
+
+    <h2>Speed (m/min)</h2>
+    <canvas id="speedGauge" width="300" height="150"></canvas>
+
+    <h2>Progress</h2>
+    <progress id="progressBar" value="0" max="100"></progress>
+    <span id="progressText">0%</span>
+
+    <h2>Formatted JSON as Table</h2>
+    <table id="jsonTable" border="1">
+        <thead>
+            <tr>
+                <th>Key</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="2"></td>
+            </tr>
+        </tbody>
+    </table>
+
     <script src="scripts/app.js"></script>
 </body>
 </html>
