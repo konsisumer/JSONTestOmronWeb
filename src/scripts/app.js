@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (key === 'SheetCounter') {
                             progressBar.value = parseFloat(value) || 0;
                             const percentage = ((progressBar.value / progressBar.max) * 100).toFixed(2);
-                            progressText.textContent = `${percentage}%`;
+                            progressText.textContent = `${percentage}% - ${progressBar.value} / ${progressBar.max}`;
                         }
                     }
                 } catch (error) {
