@@ -112,10 +112,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
 
                         // Progressbar aktualisieren
-                        if (key === 'JobSheetCounter') {
+                        if (key === 'JobSheet') {
                             progressBar.max = parseFloat(value) || 100;
                         }
-                        if (key === 'SheetCounter') {
+                        if (key === 'JobSheetCounter') {
                             progressBar.value = parseFloat(value) || 0;
                             const percentage = ((progressBar.value / progressBar.max) * 100).toFixed(2);
                             progressText.textContent = `${percentage}% - ${progressBar.value} / ${progressBar.max}`;
@@ -134,5 +134,5 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Starte das automatische Abrufen direkt beim Laden der Seite
-    setInterval(fetchData, 100); // Alle 100 ms
+    setInterval(fetchData, 1000); // Alle 100 ms
 });
