@@ -118,7 +118,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (key === 'JobSheetCounter') {
                             progressBar.value = parseFloat(value) || 0;
                             const percentage = ((progressBar.value / progressBar.max) * 100).toFixed(2);
-                            progressText.textContent = `${percentage}% - ${progressBar.value} / ${progressBar.max}`;
+                            timeLeft = Math.round((progressBar.max - progressBar.value) / (parseFloat(jsonData.JobSpeed / 60) || 1));
+                            progressText.textContent = `${percentage}% - ${progressBar.value} / ${progressBar.max} - ${timeLeft} min. verbleibend`;
                         }
                     }
                 } catch (error) {
