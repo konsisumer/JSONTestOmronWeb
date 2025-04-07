@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     machineStatus.textContent = jsonData.MachineStatus || 'Unknown';
 
                     // Update Machine Speed
-                    machineSpeed.textContent = `${jsonData.MachineSpeed || 0} m/min`;
+                    machineSpeed.textContent = `${jsonData.MachineSpeed || 0} m/min - ${jsonData.JobSpeed || 0} sheets/h`;
 
                     // Update Progress Bar
                     if (jsonData.JobSheet > 0) {
