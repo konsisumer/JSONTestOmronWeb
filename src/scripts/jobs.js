@@ -20,7 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     // Populate table with job data
                     jsonData.Jobs.forEach((job, index) => {
-                        const row = document.createElement('tr');
+                        // Skip empty jobs (e.g., no JobName and all values are 0)
+                        if (!job.JobName && !job.JobSetupTime && !job.JobProductionTime && !job.JobSheetSetup && !job.JobSheetProduction && !job.JobSheetError) {
+                            return;
+                        }
 
                         const jobName = job.JobName || 'N/A';
                         const jobStartTime = new Date(job.JobStartTime).toLocaleString();
@@ -31,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         const jobSheetProduction = job.JobSheetProduction || 0;
                         const jobSheetError = job.JobSheetError || 0;
 
+                        const row = document.createElement('tr');
                         row.innerHTML = `
                             <td>${jobName}</td>
                             <td>${jobStartTime}</td>
@@ -68,6 +72,11 @@ document.addEventListener('DOMContentLoaded', () => {
                             generateXML(jsonData.Jobs[index]);
                         });
                     });
+
+                    // Show a message if no valid jobs are found
+                    if (jobsTableBody.innerHTML === '') {
+                        jobsTableBody.innerHTML = '<tr><td colspan="9">No valid job data available.</td></tr>';
+                    }
                 } catch (error) {
                     jobsTableBody.innerHTML = '<tr><td colspan="9">Error processing JSON data.</td></tr>';
                     console.error('Error processing JSON:', error);
