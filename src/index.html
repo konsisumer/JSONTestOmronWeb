@@ -3,62 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Display HTTP Response</title>
+    <title>Machine Dashboard</title>
     <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <h1>HTTP Response from Kama FlexFold52</h1>
-  
-    <h2>Select State</h2>
-    <form id="stateForm">
-        <label>
-            <input type="radio" name="state" value="all" checked>
-            All
-        </label>
-        <label>
-            <input type="radio" name="state" value="machine">
-            Machine
-        </label>
-        <label>
-            <input type="radio" name="state" value="job">
-            Job
-        </label>
-    </form>
-
-    <h2>Current URL</h2>
-    <pre id="currentUrl"></pre>
-
-    <h2>Status Code</h2>
-    <pre id="status"></pre>
-
-    <h2>Headers</h2>
-    <pre id="headers"></pre>
-
-    <h2>Content</h2>
-    <pre id="content"></pre>
-
-    <h2>Speed (m/min)</h2>
-    <canvas id="speedGauge" width="300" height="150"></canvas>
-
-    <h2>Progress</h2>
-    <progress id="progressBar" value="0" max="100"></progress>
-    <span id="progressText">0%</span>
-
-    <h2>Formatted JSON as Table</h2>
-    <table id="jsonTable" border="1">
-        <thead>
-            <tr>
-                <th>Key</th>
-                <th>Value</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td colspan="2"></td>
-            </tr>
-        </tbody>
-    </table>
-
+    <header>
+        <h1>KAMA FlexFold 52 Dashboard</h1>
+        <nav>
+            <ul>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#performance">Performance</a></li>
+                <li><a href="#machine">Machine</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="overview" class="card">
+            <h2>Overview</h2>
+            <div class="grid">
+                <div class="info-box">
+                    <h3>Machine Status</h3>
+                    <p id="machineStatus"></p>
+                </div>
+                <div class="info-box">
+                    <h3>Speed</h3>
+                    <p id="machineSpeed"></p>
+                    <canvas id="speedGauge" width="300" height="100"></canvas>
+                </div>
+            </div>
+        </section>
+        <section id="job" class="card">
+            <h2>Job</h2>
+            <div class="grid">
+                <div class="info-box">
+                    <h3>Name</h3>
+                    <p id="jobName"></p>
+                </div>
+                <div class="info-box">
+                    <h3>Progress</h3>
+                    <progress id="progressBar" value="0" max="100"></progress>
+                    <p id="progressText"></p>
+                </div>
+                <div class="info-box">
+                    <h3>Efficiency</h3>
+                    <p id="efficiency"></p>
+                </div>
+            </div>
+        </section>
+        <section id="machine" class="card">
+            <h2>Machine</h2>
+            <div class="grid">
+                <div class="info-box">
+                    <h3>Machine Number</h3>
+                    <p id="machineNumber"></p>
+                </div>
+                <div class="info-box">
+                    <h3>Counter</h3>
+                    <p id="machineSheetCounter"></p>
+                </div>
+            </div>
+        </section>
+    </main>
     <script src="scripts/app.js"></script>
 </body>
 </html>

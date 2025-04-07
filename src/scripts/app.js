@@ -2,24 +2,25 @@
 // It handles the functionality and interactivity of the web page.
 
 document.addEventListener('DOMContentLoaded', () => {
+    const machineNumber = document.getElementById('machineNumber');
+    const machineStatus = document.getElementById('machineStatus');
+    const machineSpeed = document.getElementById('machineSpeed');
+    const machineSheetCounter = document.getElementById('machineSheetCounter');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const jobName = document.getElementById('jobName');
+    const efficiency = document.getElementById('efficiency');
+    const currentUrl = document.getElementById('currentUrl');
     const statusElement = document.getElementById('status');
     const headersElement = document.getElementById('headers');
     const contentElement = document.getElementById('content');
-    const jsonTable = document.getElementById('jsonTable').querySelector('tbody');
+    const jsonTable = document.getElementById('jsonTable');
+
     const speedGauge = document.getElementById('speedGauge');
     const gaugeContext = speedGauge.getContext('2d');
-    const progressBar = document.getElementById('progressBar');
-    const progressText = document.getElementById('progressText');
-    const stateForm = document.getElementById('stateForm');
-    const currentUrlElement = document.getElementById('currentUrl');
+    const maxSpeed = 250;
 
-    const maxSpeed = 250; // Maximalgeschwindigkeit für den Tacho
-    let selectedState = 'all'; // Standardwert
-
-    // Event-Listener für Radiobuttons
-    stateForm.addEventListener('change', (event) => {
-        selectedState = event.target.value;
-    });
+    const url = 'http://192.168.250.1:8080?state=all'; // Ersetze dies durch die tatsächliche API-URL
 
     const drawGauge = (speed) => {
         const centerX = speedGauge.width / 2;
@@ -57,43 +58,50 @@ document.addEventListener('DOMContentLoaded', () => {
         gaugeContext.font = '16px Arial';
         gaugeContext.fillStyle = '#000';
         gaugeContext.textAlign = 'center';
-        gaugeContext.fillText(`${speed} m/min`, centerX, centerY - 10);
+        //gaugeContext.fillText(`${speed} m/min`, centerX, centerY - 10);
     };
 
     const fetchData = () => {
-        // URL mit dem ausgewählten State
-        const url = `http://192.168.250.1:8080?state=${selectedState}`;
-
-        // Zeige die aktuelle URL an
-        currentUrlElement.textContent = url;
-
         fetch(url, { cache: 'no-store' })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP-Fehler! Status: ${response.status}`);
-                }
-
-                // Statuscode anzeigen
-                statusElement.textContent = `Status: ${response.status} ${response.statusText}`;
-
-                // Alle Header anzeigen
-                let headersText = '';
-                for (let [key, value] of response.headers.entries()) {
-                    headersText += `${key}: ${value}\n`;
-                }
-                headersElement.textContent = headersText;
-
-                return response.text();
-            })
-            .then(data => {
-                contentElement.textContent = data;
-
-                // Versuche, die Daten als JSON zu parsen und als Tabelle anzuzeigen
+            .then(response => response.json())
+            .then(jsonData => {
                 try {
-                    const jsonData = JSON.parse(data);
+                    drawGauge(jsonData.MachineSpeed || 0);
 
-                    // Tabelle aktualisieren
-                    jsonTable.innerHTML = ''; // Alte Daten entfernen
+                    machineSheetCounter.textContent = jsonData.MachineSheetCounter || 0;
+                    machineNumber.textContent = jsonData.MachineNumber || 'Unknown';
+
+                    // Update Machine Status
+                    machineStatus.textContent = jsonData.MachineStatus || 'Unknown';
+
+                    // Update Machine Speed
+                    machineSpeed.textContent = `${jsonData.MachineSpeed || 0} m/min`;
+
+                    // Update Progress Bar
+                    progressBar.max = jsonData.JobSheet || 100;
+                    progressBar.value = jsonData.JobSheetCounter || 0;
+                    const percentage = ((progressBar.value / progressBar.max) * 100).toFixed(2);
+                    const timeLeft = Math.round((progressBar.max - progressBar.value) / (jsonData.JobSpeed / 60 || 1));
+                    progressText.textContent = `${percentage}% - ${progressBar.value} / ${progressBar.max} - ${timeLeft} min remaining`;
+
+                    jobName.textContent = jsonData.JobName || 'No job running';
+
+                    efficiency.textContent = `${((jsonData.JobSheetCounter * 100) /(jsonData.JobSheetCounter + jsonData.JobSheetErrorCounter) || 1).toFixed(2)}%`;
+
+                    // Update Current URL
+                    currentUrl.textContent = url;
+
+                    // Update Status Code
+                    statusElement.textContent = jsonData.StatusCode || 'N/A';
+
+                    // Update Headers
+                    headersElement.textContent = JSON.stringify(jsonData.Headers, null, 2);
+
+                    // Update Content
+                    contentElement.textContent = JSON.stringify(jsonData.Content, null, 2);
+
+                    // Update JSON Table
+                    jsonTable.innerHTML = ''; // Clear old data
                     for (const [key, value] of Object.entries(jsonData)) {
                         const row = document.createElement('tr');
                         const keyCell = document.createElement('td');
@@ -105,35 +113,20 @@ document.addEventListener('DOMContentLoaded', () => {
                         row.appendChild(keyCell);
                         row.appendChild(valueCell);
                         jsonTable.appendChild(row);
-
-                        // Tacho aktualisieren, wenn "MachineSpeed" gefunden wird
-                        if (key === 'MachineSpeed') {
-                            drawGauge(parseFloat(value) || 0);
-                        }
-
-                        // Progressbar aktualisieren
-                        if (key === 'JobSheet') {
-                            progressBar.max = parseFloat(value) || 100;
-                        }
-                        if (key === 'JobSheetCounter') {
-                            progressBar.value = parseFloat(value) || 0;
-                            const percentage = ((progressBar.value / progressBar.max) * 100).toFixed(2);
-                            timeLeft = Math.round((progressBar.max - progressBar.value) / (parseFloat(jsonData.JobSpeed / 60) || 1));
-                            progressText.textContent = `${percentage}% - ${progressBar.value} / ${progressBar.max} - ${timeLeft} min. verbleibend`;
-                        }
                     }
+
                 } catch (error) {
-                    jsonTable.innerHTML = '<tr><td colspan="2">Die Antwort ist kein gültiges JSON.</td></tr>';
+                    jsonTable.innerHTML = '<tr><td colspan="2">Invalid JSON response.</td></tr>';
                 }
             })
             .catch(error => {
-                statusElement.textContent = 'Fehler beim Laden!';
-                contentElement.textContent = 'Fehlermeldung: ' + error.message;
-                jsonTable.innerHTML = '<tr><td colspan="2">Fehler beim Abrufen der JSON-Daten.</td></tr>';
-                console.error("Fehler:", error);
+                statusElement.textContent = 'Error loading data!';
+                contentElement.textContent = 'Error message: ' + error.message;
+                jsonTable.innerHTML = '<tr><td colspan="2">Error fetching JSON data.</td></tr>';
+                console.error('Error:', error);
             });
     };
 
-    // Starte das automatische Abrufen direkt beim Laden der Seite
-    setInterval(fetchData, 1000); // Alle 100 ms
+    // Start fetching data automatically
+    setInterval(fetchData, 1000); // Fetch data every second
 });
