@@ -82,3 +82,61 @@ pre {
     margin: 0 auto; /* Zentriert die Progressbar horizontal */
     width: 80%; /* Optional: Breite der Progressbar anpassen */
 }
+
+/* Styled table */
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 0.9em;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.styled-table thead tr {
+    background-color: #333;
+    color: #ffffff;
+    text-align: left;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+    text-align: center;
+}
+
+.styled-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.styled-table tbody tr:last-of-type {
+    border-bottom: 2px solid #333;
+}
+
+.styled-table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Button styles */
+button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 1.2em;
+    color: #333;
+}
+
+button i {
+    margin: 0 5px;
+}
+
+button:hover i {
+    color: #007bff;
+}

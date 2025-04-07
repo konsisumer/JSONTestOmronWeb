@@ -20,8 +20,8 @@
     <main>
         <section id="job-overview" class="card">
             <h2>Job Overview</h2>
-            <button id="loadJobsButton">Load Jobs</button>
-            <table id="jobsTable" border="1">
+            <button id="loadJobsButton" class="btn-primary">Load Jobs</button>
+            <table id="jobsTable" class="styled-table">
                 <thead>
                     <tr>
                         <th>Job Name</th>
@@ -32,16 +32,18 @@
                         <th>Sheets Setup</th>
                         <th>Sheets Produced</th>
                         <th>Sheet Errors</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td colspan="8">Click "Load Jobs" to display data</td>
+                        <td colspan="9">Click "Load Jobs" to display data</td>
                     </tr>
                 </tbody>
             </table>
         </section>
     </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script src="scripts/jobs.js"></script>
 </body>
 </html>

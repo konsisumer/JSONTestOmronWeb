@@ -1,6 +1,6 @@
 # JSON Test Web Application
 
-This is a web application that demonstrates fetching and displaying JSON data from a server. It includes dynamic visualizations such as a speed gauge and a progress bar, which adapt based on the machine's state. Additionally, it now includes a new page for displaying job data dynamically fetched from a server.
+This is a web application that demonstrates fetching and displaying JSON data from a server. It includes dynamic visualizations such as a speed gauge and a progress bar, which adapt based on the machine's state. Additionally, it now includes a new page for displaying job data dynamically fetched from a server and generating PDFs and XML files for individual jobs.
 
 ## Project Structure
 
@@ -28,6 +28,15 @@ JSONTestTOmronWeb
 - **Job Overview**:
   - A new page (`jobs.html`) dynamically fetches job data from a server and displays it in a table.
   - Users can load job data by clicking a button, and the table updates dynamically.
+  - Each job row includes buttons to generate a PDF or XML file with the job's details.
+
+- **PDF Generation**:
+  - Users can generate a PDF for each job by clicking the "Generate PDF" button in the corresponding row.
+  - The PDF includes all relevant job details, such as job name, start and end times, setup time, production time, and sheet statistics.
+
+- **XML Generation**:
+  - Users can generate an XML file for each job by clicking the "Generate XML" button in the corresponding row.
+  - The XML file includes all relevant job details in a structured format.
 
 - **Error Handling**:
   - If an error occurs while fetching data, fallback messages are displayed, and the application logs the error for debugging.
@@ -50,17 +59,6 @@ JSONTestTOmronWeb
   "SheetCounter": 6239,
   "SheetErrorCounter": 3379,
   "TIME": "2025-03-21T15:42:40.795Z"
-}
-```
-
-### State: `machine`
-```json
-{
-  "MachineNumber": "18-25-004",
-  "MachineSpeed": 152,
-  "ProductionSpeed": 43429,
-  "JobState": "Production",
-  "TIME": "2025-03-21T15:44:37.195Z"
 }
 ```
 
@@ -147,7 +145,13 @@ This will serve the project files locally, allowing you to test the application 
    - Open `jobs.html` to view job data dynamically fetched from the server.
    - Click the "Load Jobs" button to fetch and display job data in a table.
 
-3. **Error Handling**:
+3. **Generate PDFs**:
+   - In the `jobs.html` table, click the "Generate PDF" button in any row to download a PDF with the job's details.
+
+4. **Generate XML Files**:
+   - In the `jobs.html` table, click the "Generate XML" button in any row to download an XML file with the job's details.
+
+5. **Error Handling**:
    - If an error occurs (e.g., the server is unreachable), fallback messages will be displayed, and errors will be logged in the console.
 
 ## Recent Changes
@@ -155,6 +159,10 @@ This will serve the project files locally, allowing you to test the application 
 - **Added `jobs.html`**:
   - A new page for displaying job data dynamically fetched from a server.
   - Includes a button to load job data and a table to display the results.
+
+- **Added PDF and XML Generation**:
+  - Each job row in the `jobs.html` table includes "Generate PDF" and "Generate XML" buttons.
+  - PDFs and XML files include all relevant job details, such as job name, start and end times, setup time, production time, and sheet statistics.
 
 - **Updated JavaScript**:
   - Added `jobs.js` to handle fetching and displaying job data.
