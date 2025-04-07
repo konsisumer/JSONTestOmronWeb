@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const gaugeContext = speedGauge.getContext('2d');
     const maxSpeed = 250;
 
-    const url = 'http://192.168.250.1:8080?state=all'; // Ersetze dies durch die tatsächliche API-URL
+    const url = 'http://192.168.250.1:8080?state=machine'; // Ersetze dies durch die tatsächliche API-URL
 
     const drawGauge = (speed) => {
         const centerX = speedGauge.width / 2;

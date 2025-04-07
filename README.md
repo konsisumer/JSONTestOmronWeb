@@ -1,6 +1,6 @@
 # JSON Test Web Application
 
-This is a web application that demonstrates fetching and displaying JSON data from a server. It includes dynamic visualizations such as a speed gauge and a progress bar, which adapt based on the machine's state.
+This is a web application that demonstrates fetching and displaying JSON data from a server. It includes dynamic visualizations such as a speed gauge and a progress bar, which adapt based on the machine's state. Additionally, it now includes a new page for displaying job data dynamically fetched from a server.
 
 ## Project Structure
 
@@ -8,10 +8,12 @@ This is a web application that demonstrates fetching and displaying JSON data fr
 JSONTestTOmronWeb
 ├── src
 │   ├── index.html        # Main HTML document
+│   ├── jobs.html         # New page for displaying job data
 │   ├── styles
 │   │   └── style.css     # Styles for the web application
 │   └── scripts
-│       └── app.js        # JavaScript code for functionality
+│       ├── app.js        # JavaScript code for the main dashboard
+│       └── jobs.js       # JavaScript code for the job overview page
 ├── package.json          # npm configuration file
 ├── .gitignore            # Files and directories to ignore by Git
 └── README.md             # Project documentation
@@ -23,11 +25,15 @@ JSONTestTOmronWeb
   - Displays an overview of the machine's status, speed, and job progress.
   - Includes a speed gauge and a progress bar for visualizing machine performance.
 
+- **Job Overview**:
+  - A new page (`jobs.html`) dynamically fetches job data from a server and displays it in a table.
+  - Users can load job data by clicking a button, and the table updates dynamically.
+
 - **Error Handling**:
   - If an error occurs while fetching data, fallback messages are displayed, and the application logs the error for debugging.
 
 - **Dynamic Updates**:
-  - The application fetches data from the server every second and updates the visualizations dynamically.
+  - The application fetches data from the server every second (for the dashboard) and updates the visualizations dynamically.
 
 ## Example JSON Responses
 
@@ -61,12 +67,28 @@ JSONTestTOmronWeb
 ### State: `job`
 ```json
 {
-  "JobID": 54,
-  "JobName": "TestJob001",
-  "JobSheetCounter": 10000,
-  "SheetCounter": 6239,
-  "SheetErrorCounter": 3379,
-  "TIME": "2025-03-21T15:42:40.795Z"
+  "Jobs": [
+    {
+      "JobName": "test01",
+      "JobStartTime": "2025-04-07T15:19:12.171Z",
+      "JobEndTime": "2025-04-07T15:19:12.171Z",
+      "JobSetupTime": 5,
+      "JobProductionTime": 12,
+      "JobSheetSetup": 20,
+      "JobSheetProduction": 11000,
+      "JobSheetError": 10
+    },
+    {
+      "JobName": "",
+      "JobStartTime": "1970-01-01T00:00:00.000Z",
+      "JobEndTime": "1970-01-01T00:00:00.000Z",
+      "JobSetupTime": 0,
+      "JobProductionTime": 0,
+      "JobSheetSetup": 0,
+      "JobSheetProduction": 0,
+      "JobSheetError": 0
+    }
+  ]
 }
 ```
 
@@ -90,7 +112,7 @@ To get started with this project, follow these steps:
    ```
 
 4. **Run the application**:
-   Open `src/index.html` in your web browser to view the application.
+   Open `src/index.html` in your web browser to view the main dashboard or `src/jobs.html` to view the job overview.
 
 ## Running a Local Web Server
 
@@ -121,20 +143,25 @@ This will serve the project files locally, allowing you to test the application 
 1. **View Overview and Performance**:
    - Open `index.html` to view the machine's status, speed, and job progress.
 
-2. **Error Handling**:
+2. **View Job Overview**:
+   - Open `jobs.html` to view job data dynamically fetched from the server.
+   - Click the "Load Jobs" button to fetch and display job data in a table.
+
+3. **Error Handling**:
    - If an error occurs (e.g., the server is unreachable), fallback messages will be displayed, and errors will be logged in the console.
 
 ## Recent Changes
 
-- **Removed `details.html`**:
-  - The detailed JSON data is now integrated into the main page (`index.html`) for simplicity.
-  
-- **Improved Error Handling**:
-  - Added fallback messages for missing or invalid data (e.g., machine status).
+- **Added `jobs.html`**:
+  - A new page for displaying job data dynamically fetched from a server.
+  - Includes a button to load job data and a table to display the results.
 
 - **Updated JavaScript**:
-  - Enhanced the logic for rendering the speed gauge and progress bar.
-  - Improved handling of JSON responses and error scenarios.
+  - Added `jobs.js` to handle fetching and displaying job data.
+  - Enhanced error handling for server and JSON processing errors.
+
+- **Improved Error Handling**:
+  - Added fallback messages for missing or invalid data (e.g., machine status, job data).
 
 ## License
 

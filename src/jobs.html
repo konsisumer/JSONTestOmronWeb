@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Overview</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1>KAMA FlexFold 52 - Job Overview</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="jobs.html">Jobs</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="job-overview" class="card">
+            <h2>Job Overview</h2>
+            <button id="loadJobsButton">Load Jobs</button>
+            <table id="jobsTable" border="1">
+                <thead>
+                    <tr>
+                        <th>Job Name</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Setup Time (min)</th>
+                        <th>Production Time (min)</th>
+                        <th>Sheets Setup</th>
+                        <th>Sheets Produced</th>
+                        <th>Sheet Errors</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="8">Click "Load Jobs" to display data</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+    <script src="scripts/jobs.js"></script>
+</body>
+</html>
