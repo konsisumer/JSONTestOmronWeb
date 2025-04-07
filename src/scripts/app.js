@@ -78,11 +78,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     machineSpeed.textContent = `${jsonData.MachineSpeed || 0} m/min`;
 
                     // Update Progress Bar
-                    progressBar.max = jsonData.JobSheet || 100;
-                    progressBar.value = jsonData.JobSheetCounter || 0;
-                    const percentage = ((progressBar.value / progressBar.max) * 100).toFixed(2);
-                    const timeLeft = Math.round((progressBar.max - progressBar.value) / (jsonData.JobSpeed / 60 || 1));
-                    progressText.textContent = `${percentage}% - ${progressBar.value} / ${progressBar.max} - ${timeLeft} min remaining`;
+                    if (jsonData.JobSheet > 0) {
+                        progressBar.style.display = 'block'; // Zeige die Progressbar an
+                        progressBar.max = jsonData.JobSheet || 100;
+                        progressBar.value = jsonData.JobSheetCounter || 0;
+                        const percentage = ((progressBar.value / progressBar.max) * 100).toFixed(2);
+                        const timeLeft = Math.round((progressBar.max - progressBar.value) / (jsonData.JobSpeed / 60 || 1));
+                        progressText.textContent = `${percentage}% - ${progressBar.value} / ${progressBar.max} - ${timeLeft} min remaining`;
+                    } else {
+                        progressBar.style.display = 'none'; // Verstecke die Progressbar
+                        progressText.textContent =  jsonData.JobSheetCounter || 0;
+                    }
 
                     jobName.textContent = jsonData.JobName || 'No job running';
 

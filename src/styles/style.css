@@ -76,3 +76,9 @@ pre {
     border: 1px solid #ccc;
     overflow-x: auto;
 }
+
+#progressBar {
+    display: block; /* Damit die Progressbar als Blockelement behandelt wird */
+    margin: 0 auto; /* Zentriert die Progressbar horizontal */
+    width: 80%; /* Optional: Breite der Progressbar anpassen */
+}
