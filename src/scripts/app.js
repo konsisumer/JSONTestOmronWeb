@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const efficiency = document.getElementById('efficiency');
 
     // API-URL
+    //const url = 'http://192.168.250.31:8080?state=machine';
     const url = 'http://192.168.250.1:8080?state=machine';
 
     // Funktion zum Abrufen und Aktualisieren der Daten

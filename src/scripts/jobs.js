@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const jobsTableBody = document.querySelector('#jobsTable tbody');
 
     // URL der API, die das JSON bereitstellt
+    //const url = 'http://192.168.250.31:8080?state=job';
     const url = 'http://192.168.250.1:8080?state=job';
 
     loadJobsButton.addEventListener('click', () => {
