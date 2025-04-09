@@ -41,9 +41,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             <td>${jobEndTime}</td>
                             <td>${jobSetupTime}</td>
                             <td>${jobProductionTime}</td>
-                            <td>${jobSheetSetup}</td>
-                            <td>${jobSheetProduction}</td>
-                            <td>${jobSheetError}</td>
+                            <td>${jobSheetSetup.toLocaleString('de-DE')}</td>
+                            <td>${jobSheetProduction.toLocaleString('de-DE')}</td>
+                            <td>${jobSheetError.toLocaleString('de-DE')}</td>
                             <td>
                                 <button class="generate-pdf" data-index="${index}" title="Generate PDF">
                                     <i class="fas fa-file-pdf"></i>

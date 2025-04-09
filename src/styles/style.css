@@ -140,3 +140,19 @@ button i {
 button:hover i {
     color: #007bff;
 }
+
+/* CSS für die Kopfzeile */
+.header-title {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Abstand zwischen Logo und Text */
+}
+
+.header-title svg {
+    flex-shrink: 0; /* Verhindert, dass das Logo skaliert wird */
+}
+
+.header-title span {
+    font-size: 1.5rem; /* Schriftgröße der Überschrift */
+    font-weight: bold;
+}

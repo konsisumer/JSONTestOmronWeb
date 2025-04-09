@@ -5,11 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Machine Dashboard</title>
     <link rel="stylesheet" href="styles/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <header>
-        <h1>KAMA FlexFold 52 Dashboard</h1>
+        <h1 class="header-title">
+            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 141.732 141.731">
+                <path fill="#002855" d="M0 70.866a70.866 70.866 0 1 1 70.866 70.865A70.865 70.865 0 0 1 0 70.866Z"></path>
+                <path fill="#fff" d="M3.169 70.866A67.697 67.697 0 1 0 70.866 3.169 67.696 67.696 0 0 0 3.169 70.866Z"></path>
+                <path fill="#002855" fill-rule="evenodd" d="M51.365 120.17h2.507l1.744-4.469h8.178l1.635 4.47h2.616l-7.086-17.553h-2.4l-7.194 17.553Zm11.665-6.431h-6.65l3.27-8.722 3.38 8.722Z"></path>
+                <path fill="#002855" d="M37.518 120.171h2.399v-8.613l7.305 8.613h3.488l-8.395-9.267 7.85-8.286h-3.162l-7.086 7.741v-7.741h-2.399v17.553zM70.444 120.171h2.398v-15.154l5.56 15.154h2.29l5.56-15.154v15.154h2.398v-17.553h-3.924l-5.124 14.61-5.233-14.61h-3.925v17.553z"></path>
+                <path fill="#002855" fill-rule="evenodd" d="M91.05 120.17h2.507l1.744-4.469h8.068l1.744 4.47h2.617l-7.086-17.553h-2.508l-7.087 17.553Zm11.665-6.431h-6.65l3.27-8.722 3.38 8.722Z"></path>
+                <path fill="#002855" d="m105.231 91.439-28.029-36.2 28.782-34.343H80.473L57.795 50.551h-.218V20.896h-20.06v70.543H5.611v1.963l52.293-.004V62.653l23.331 30.745 53.994.004 1.105-1.963h-31.103z"></path>
+                <path fill="#99a9bb" d="M37.52 95.049h25.644s5.334-7.34 11.769 0h32.252v2.095h-33.74c-2.233-4.341-6.833-4.19-8.95-.043l-26.976.022v-2.074Z"></path>
+            </svg>
+            <span>FlexFold 52</span>
+        </h1>
         <nav>
             <ul>
                 <li><a href="index.html">Dashboard</a></li>
@@ -18,6 +28,7 @@
         </nav>
     </header>
     <main>
+        <!-- Overview Section -->
         <section id="overview" class="card">
             <h2>Overview</h2>
             <div class="grid">
@@ -28,10 +39,15 @@
                 <div class="info-box">
                     <h3>Speed</h3>
                     <p id="machineSpeed"></p>
-                    <canvas id="speedGauge" width="300" height="100"></canvas>
+                </div>
+                <div id="productionChartContainer" class="info-box">
+                    <h3>Production Speed</h3>
+                    <p id="productionSpeed"></p>
                 </div>
             </div>
         </section>
+
+        <!-- Job Section -->
         <section id="job" class="card">
             <h2>Job</h2>
             <div class="grid">
@@ -50,6 +66,8 @@
                 </div>
             </div>
         </section>
+
+        <!-- Machine Section -->
         <section id="machine" class="card">
             <h2>Machine</h2>
             <div class="grid">
