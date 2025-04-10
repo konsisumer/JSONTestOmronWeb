@@ -61,16 +61,30 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Add event listeners for PDF generation
                     document.querySelectorAll('.generate-pdf').forEach(button => {
                         button.addEventListener('click', (event) => {
-                            const index = event.target.getAttribute('data-index');
-                            generatePDF(jsonData.Jobs[index]);
+                            const buttonElement = event.currentTarget; // Sicherstellen, dass das Button-Element verwendet wird
+                            const index = buttonElement.getAttribute('data-index');
+                            const job = jsonData.Jobs[index];
+
+                            if (job) {
+                                generatePDF(job);
+                            } else {
+                                console.error('Job data not found for index:', index);
+                            }
                         });
                     });
 
                     // Add event listeners for XML generation
                     document.querySelectorAll('.generate-xml').forEach(button => {
                         button.addEventListener('click', (event) => {
-                            const index = event.target.getAttribute('data-index');
-                            generateXML(jsonData.Jobs[index]);
+                            const buttonElement = event.currentTarget; // Sicherstellen, dass das Button-Element verwendet wird
+                            const index = buttonElement.getAttribute('data-index');
+                            const job = jsonData.Jobs[index];
+                    
+                            if (job) {
+                                generateXML(job);
+                            } else {
+                                console.error('Job data not found for index:', index);
+                            }
                         });
                     });
 
