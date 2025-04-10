@@ -3,6 +3,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     // DOM-Elemente
+    const machineType = document.getElementById('machineType');
     const machineNumber = document.getElementById('machineNumber');
     const machineStatus = document.getElementById('machineStatus');
     const machineSpeed = document.getElementById('machineSpeed');
@@ -12,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressText = document.getElementById('progressText');
     const jobName = document.getElementById('jobName');
     const efficiency = document.getElementById('efficiency');
+    const speedInfoBox = document.querySelector('.info-box:nth-child(2)'); // Zweite Info-Box (Speed)
 
     // API-URL
     //const url = 'http://192.168.250.31:8080?state=machine';
@@ -44,11 +46,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Maschineninformationen aktualisieren
     const updateMachineInfo = (data) => {
+        machineType.textContent = data.MachineType || 'Unknown';
         machineSheetCounter.textContent = data.MachineSheetCounter.toLocaleString('de-DE') || 0;
         machineNumber.textContent = data.MachineNumber || 'Unknown';
         machineStatus.textContent = data.MachineStatus || 'Unknown';
         machineSpeed.textContent = `${data.MachineSpeed || 0} m/min`;
-        productionSpeed.textContent = `${data.JobSpeed.toLocaleString('de-DE') || 0} pieces per hour`;
+        if (machineType === 'FlexFold52') {
+            productionSpeed.textContent = `${data.JobSpeed.toLocaleString('de-DE') || 0} pieces per hour`;
+        }
+        else {
+            productionSpeed.textContent = `${data.JobSpeed.toLocaleString('de-DE') || 0} sheets per hour`;
+        }
+        updateSpeedInfoBoxVisibility(data.MachineType);
+    };
+
+    // Funktion zum Aktualisieren der Sichtbarkeit der Speed-Info-Box
+    const updateSpeedInfoBoxVisibility = (machineType) => {
+        if (machineType === 'FlexFold52') {
+            speedInfoBox.style.display = 'block'; // Anzeigen
+        } else {
+            speedInfoBox.style.display = 'none'; // Ausblenden
+        }
     };
 
     // Fortschrittsbalken aktualisieren
