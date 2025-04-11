@@ -3,94 +3,94 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     // DOM-Elemente
-    const machineType = document.getElementById('machineType');
-    const machineNumber = document.getElementById('machineNumber');
-    const machineStatus = document.getElementById('machineStatus');
-    const machineSpeed = document.getElementById('machineSpeed');
-    const machineSheetCounter = document.getElementById('machineSheetCounter');
-    const productionSpeed = document.getElementById('productionSpeed');
-    const progressBar = document.getElementById('progressBar');
-    const progressText = document.getElementById('progressText');
-    const jobName = document.getElementById('jobName');
-    const efficiency = document.getElementById('efficiency');
-    const speedInfoBox = document.querySelector('.info-box:nth-child(2)'); // Zweite Info-Box (Speed)
+    const elements = {
+        machineType: document.getElementById('machineType'),
+        machineNumber: document.getElementById('machineNumber'),
+        machineStatus: document.getElementById('machineStatus'),
+        machineSpeed: document.getElementById('machineSpeed'),
+        machineSheetCounter: document.getElementById('machineSheetCounter'),
+        productionSpeed: document.getElementById('productionSpeed'),
+        progressBar: document.getElementById('progressBar'),
+        progressText: document.getElementById('progressText'),
+        jobName: document.getElementById('jobName'),
+        efficiency: document.getElementById('efficiency'),
+        speedInfoBox: document.querySelector('.info-box:nth-child(2)') // Zweite Info-Box (Speed)
+    };
 
     // API-URL
-    //const url = 'http://192.168.250.31:8080?state=machine';
     const url = 'http://192.168.250.1:8080?state=machine';
 
     // Funktion zum Abrufen und Aktualisieren der Daten
-    const fetchData = () => {
-        fetch(url, { cache: 'no-store' })
-            .then(response => response.json())
-            .then(jsonData => {
-                try {
-                    // Maschineninformationen aktualisieren
-                    updateMachineInfo(jsonData);
-                    // Fortschrittsbalken aktualisieren
-                    updateProgressBar(jsonData);
-                    // Jobinformationen aktualisieren
-                    updateJobInfo(jsonData);
-                    // Aktuelle URL anzeigen
-                    if (currentUrl) {
-                        currentUrl.textContent = url;
-                    }
-                } catch (error) {
-                    console.error('Error processing JSON data:', error);
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-            });
+    const fetchData = async () => {
+        try {
+            const response = await fetch(url, { cache: 'no-store' });
+            const jsonData = await response.json();
+            updateUI(jsonData);
+        } catch (error) {
+            console.error('Error fetching or processing data:', error);
+        }
+    };
+
+    // UI aktualisieren
+    const updateUI = (data) => {
+        updateMachineInfo(data);
+        updateProgressBar(data);
+        updateJobInfo(data);
     };
 
     // Maschineninformationen aktualisieren
     const updateMachineInfo = (data) => {
+        const { machineType, machineSheetCounter, machineNumber, machineStatus, machineSpeed, productionSpeed } = elements;
+
         machineType.textContent = data.MachineType || 'Unknown';
-        machineSheetCounter.textContent = data.MachineSheetCounter.toLocaleString('de-DE') || 0;
+        machineSheetCounter.textContent = formatNumber(data.MachineSheetCounter);
         machineNumber.textContent = data.MachineNumber || 'Unknown';
         machineStatus.textContent = data.MachineStatus || 'Unknown';
         machineSpeed.textContent = `${data.MachineSpeed || 0} m/min`;
-        if (machineType === 'FlexFold52') {
-            productionSpeed.textContent = `${data.JobSpeed.toLocaleString('de-DE') || 0} pieces per hour`;
-        }
-        else {
-            productionSpeed.textContent = `${data.JobSpeed.toLocaleString('de-DE') || 0} sheets per hour`;
-        }
+
+        productionSpeed.textContent = `${formatNumber(data.JobSpeed)} ${data.MachineType === 'FlexFold52' ? 'pieces' : 'sheets'} per hour`;
+
         updateSpeedInfoBoxVisibility(data.MachineType);
     };
 
-    // Funktion zum Aktualisieren der Sichtbarkeit der Speed-Info-Box
+    // Sichtbarkeit der Speed-Info-Box aktualisieren
     const updateSpeedInfoBoxVisibility = (machineType) => {
-        if (machineType === 'FlexFold52') {
-            speedInfoBox.style.display = 'block'; // Anzeigen
-        } else {
-            speedInfoBox.style.display = 'none'; // Ausblenden
-        }
+        elements.speedInfoBox.style.display = machineType === 'FlexFold52' ? 'block' : 'none';
     };
 
     // Fortschrittsbalken aktualisieren
     const updateProgressBar = (data) => {
+        const { progressBar, progressText } = elements;
+
         if (data.JobSheet > 0) {
             progressBar.style.display = 'block';
             progressBar.max = data.JobSheet || 100;
             progressBar.value = data.JobSheetCounter || 0;
 
-            const percentage = ((progressBar.value / progressBar.max) * 100).toFixed(0);
-            const timeLeft = Math.round((progressBar.max - progressBar.value) / (data.JobSpeed / 60 || 1));
-            progressText.textContent = `${percentage.toLocaleString('de-DE')}% - ${progressBar.value.toLocaleString('de-DE')} / ${progressBar.max.toLocaleString('de-DE')} - ${timeLeft} min remaining`;
+            const percentage = calculatePercentage(progressBar.value, progressBar.max);
+            const timeLeft = calculateTimeLeft(progressBar.max, progressBar.value, data.JobSpeed);
+
+            progressText.textContent = `${percentage}% - ${formatNumber(progressBar.value)} / ${formatNumber(progressBar.max)} - ${timeLeft} min remaining`;
         } else {
             progressBar.style.display = 'none';
-            progressText.textContent = data.JobSheetCounter.toLocaleString('de-DE') || 0;
+            progressText.textContent = formatNumber(data.JobSheetCounter);
         }
     };
 
     // Jobinformationen aktualisieren
     const updateJobInfo = (data) => {
+        const { jobName, efficiency } = elements;
+
         jobName.textContent = data.JobName || 'No job running';
-        efficiency.textContent = `${((data.JobSheetCounter * 100) / (data.JobSheetCounter + data.JobSheetErrorCounter) || 1).toFixed(0)}%`;
+        efficiency.textContent = `${calculateEfficiency(data.JobSheetCounter, data.JobSheetErrorCounter)}%`;
     };
 
+    // Hilfsfunktionen
+    const formatNumber = (number) => (number || 0).toLocaleString('de-DE');
+    const calculatePercentage = (value, max) => ((value / max) * 100).toFixed(0);
+    const calculateTimeLeft = (max, value, speed) => Math.round((max - value) / (speed / 60 || 1));
+    const calculateEfficiency = (produced, errors) => ((produced * 100) / (produced + errors || 1)).toFixed(0);
+
     // Daten alle 2 Sekunden aktualisieren
-    setInterval(fetchData, 1000);
+    setInterval(fetchData, 2000);
 });
