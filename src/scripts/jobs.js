@@ -22,11 +22,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Populate table with job data
                     jsonData.Jobs.forEach((job, index) => {
                         // Skip empty jobs (e.g., no JobName and all values are 0)
-                        if (!job.JobName && !job.JobSetupTime && !job.JobProductionTime && !job.JobSheetSetup && !job.JobSheetProduction && !job.JobSheetError) {
+                        if (!job.JobName && !job.JobStatus && !job.JobSetupTime && !job.JobProductionTime && !job.JobSheetSetup && !job.JobSheetProduction && !job.JobSheetError) {
                             return;
                         }
 
                         const jobName = job.JobName || 'N/A';
+                        const jobStatus = job.JobStatus || 'N/A'; // Fallback auf 'Status', falls 'JobStatus' nicht existiert
                         const jobStartTime = new Date(job.JobStartTime).toLocaleString();
                         const jobEndTime = new Date(job.JobEndTime).toLocaleString();
                         const jobSetupTime = job.JobSetupTime || 0;
@@ -36,24 +37,55 @@ document.addEventListener('DOMContentLoaded', () => {
                         const jobSheetError = job.JobSheetError || 0;
 
                         const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${jobName}</td>
-                            <td>${jobStartTime}</td>
-                            <td>${jobEndTime}</td>
-                            <td>${jobSetupTime}</td>
-                            <td>${jobProductionTime}</td>
-                            <td>${jobSheetSetup.toLocaleString('de-DE')}</td>
-                            <td>${jobSheetProduction.toLocaleString('de-DE')}</td>
-                            <td>${jobSheetError.toLocaleString('de-DE')}</td>
-                            <td>
-                                <button class="generate-pdf" data-index="${index}" title="Generate PDF">
-                                    <i class="fas fa-file-pdf"></i>
-                                </button>
-                                <button class="generate-xml" data-index="${index}" title="Generate XML">
-                                    <i class="fas fa-file-code"></i>
-                                </button>
-                            </td>
-                        `;
+                        if (jobStatus === 'Finish') {
+                            row.innerHTML = `
+                                <td>${jobName}</td>
+                                <td>${jobStatus}</td>
+                                <td>${jobStartTime}</td>
+                                <td>${jobEndTime}</td>
+                                <td>${jobSetupTime}</td>
+                                <td>${jobProductionTime}</td>
+                                <td>${jobSheetSetup.toLocaleString('de-DE')}</td>
+                                <td>${jobSheetProduction.toLocaleString('de-DE')}</td>
+                                <td>${jobSheetError.toLocaleString('de-DE')}</td>
+                                <td>
+                                    <button class="generate-pdf" data-index="${index}" title="Generate PDF">
+                                        <i class="fas fa-file-pdf"></i>
+                                    </button>
+                                    <button class="generate-xml" data-index="${index}" title="Generate XML">
+                                        <i class="fas fa-file-code"></i>
+                                    </button>
+                                </td>
+                            `;
+                        }
+                        if (jobStatus === 'Production') {
+                            row.innerHTML = `
+                                <td>${jobName}</td>
+                                <td>${jobStatus}</td>
+                                <td>${jobStartTime}</td>
+                                <td></td>
+                                <td>${jobSetupTime}</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            `;
+                        }
+                        if (jobStatus === 'Waiting') {
+                            row.innerHTML = `
+                                <td>${jobName}</td>
+                                <td>${jobStatus}</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            `;
+                        }
 
                         jobsTableBody.appendChild(row);
                     });
