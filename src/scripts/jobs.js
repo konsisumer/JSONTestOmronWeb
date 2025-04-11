@@ -1,9 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const loadJobsButton = document.getElementById('loadJobsButton');
     const jobsTableBody = document.querySelector('#jobsTable tbody');
-
-    // URL der API, die das JSON bereitstellt
-    //const url = 'http://192.168.250.31:8080?state=job';
     const url = 'http://192.168.250.1:8080?state=job';
 
     loadJobsButton.addEventListener('click', () => {
@@ -14,126 +11,91 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 return response.json();
             })
-            .then(jsonData => {
-                try {
-                    // Clear existing table rows
-                    jobsTableBody.innerHTML = '';
-
-                    // Populate table with job data
-                    jsonData.Jobs.forEach((job, index) => {
-                        // Skip empty jobs (e.g., no JobName and all values are 0)
-                        if (!job.JobName && !job.JobStatus && !job.JobSetupTime && !job.JobProductionTime && !job.JobSheetSetup && !job.JobSheetProduction && !job.JobSheetError) {
-                            return;
-                        }
-
-                        const jobName = job.JobName || 'N/A';
-                        const jobStatus = job.JobStatus || 'N/A'; // Fallback auf 'Status', falls 'JobStatus' nicht existiert
-                        const jobStartTime = new Date(job.JobStartTime).toLocaleString();
-                        const jobEndTime = new Date(job.JobEndTime).toLocaleString();
-                        const jobSetupTime = job.JobSetupTime || 0;
-                        const jobProductionTime = job.JobProductionTime || 0;
-                        const jobSheetSetup = job.JobSheetSetup || 0;
-                        const jobSheetProduction = job.JobSheetProduction || 0;
-                        const jobSheetError = job.JobSheetError || 0;
-
-                        const row = document.createElement('tr');
-                        if (jobStatus === 'Finish') {
-                            row.innerHTML = `
-                                <td>${jobName}</td>
-                                <td>${jobStatus}</td>
-                                <td>${jobStartTime}</td>
-                                <td>${jobEndTime}</td>
-                                <td>${jobSetupTime}</td>
-                                <td>${jobProductionTime}</td>
-                                <td>${jobSheetSetup.toLocaleString('de-DE')}</td>
-                                <td>${jobSheetProduction.toLocaleString('de-DE')}</td>
-                                <td>${jobSheetError.toLocaleString('de-DE')}</td>
-                                <td>
-                                    <button class="generate-pdf" data-index="${index}" title="Generate PDF">
-                                        <i class="fas fa-file-pdf"></i>
-                                    </button>
-                                    <button class="generate-xml" data-index="${index}" title="Generate XML">
-                                        <i class="fas fa-file-code"></i>
-                                    </button>
-                                </td>
-                            `;
-                        }
-                        if (jobStatus === 'Production') {
-                            row.innerHTML = `
-                                <td>${jobName}</td>
-                                <td>${jobStatus}</td>
-                                <td>${jobStartTime}</td>
-                                <td></td>
-                                <td>${jobSetupTime}</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            `;
-                        }
-                        if (jobStatus === 'Waiting') {
-                            row.innerHTML = `
-                                <td>${jobName}</td>
-                                <td>${jobStatus}</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            `;
-                        }
-
-                        jobsTableBody.appendChild(row);
-                    });
-
-                    // Add event listeners for PDF generation
-                    document.querySelectorAll('.generate-pdf').forEach(button => {
-                        button.addEventListener('click', (event) => {
-                            const buttonElement = event.currentTarget; // Sicherstellen, dass das Button-Element verwendet wird
-                            const index = buttonElement.getAttribute('data-index');
-                            const job = jsonData.Jobs[index];
-
-                            if (job) {
-                                generatePDF(job);
-                            } else {
-                                console.error('Job data not found for index:', index);
-                            }
-                        });
-                    });
-
-                    // Add event listeners for XML generation
-                    document.querySelectorAll('.generate-xml').forEach(button => {
-                        button.addEventListener('click', (event) => {
-                            const buttonElement = event.currentTarget; // Sicherstellen, dass das Button-Element verwendet wird
-                            const index = buttonElement.getAttribute('data-index');
-                            const job = jsonData.Jobs[index];
-                    
-                            if (job) {
-                                generateXML(job);
-                            } else {
-                                console.error('Job data not found for index:', index);
-                            }
-                        });
-                    });
-
-                    // Show a message if no valid jobs are found
-                    if (jobsTableBody.innerHTML === '') {
-                        jobsTableBody.innerHTML = '<tr><td colspan="9">No valid job data available.</td></tr>';
-                    }
-                } catch (error) {
-                    jobsTableBody.innerHTML = '<tr><td colspan="9">Error processing JSON data.</td></tr>';
-                    console.error('Error processing JSON:', error);
-                }
-            })
+            .then(jsonData => populateJobsTable(jsonData.Jobs))
             .catch(error => {
                 jobsTableBody.innerHTML = '<tr><td colspan="9">Error fetching data from the server.</td></tr>';
                 console.error('Fetch error:', error);
             });
     });
+
+    const populateJobsTable = (jobs) => {
+        try {
+            jobsTableBody.innerHTML = ''; // Clear existing rows
+
+            if (!jobs || jobs.length === 0) {
+                jobsTableBody.innerHTML = '<tr><td colspan="9">No valid job data available.</td></tr>';
+                return;
+            }
+
+            jobs.forEach((job, index) => {
+                if (isJobEmpty(job)) return;
+
+                const row = document.createElement('tr');
+                row.innerHTML = generateRowHTML(job, index);
+                jobsTableBody.appendChild(row);
+            });
+
+            addEventListeners(jobs);
+        } catch (error) {
+            jobsTableBody.innerHTML = '<tr><td colspan="9">Error processing JSON data.</td></tr>';
+            console.error('Error processing JSON:', error);
+        }
+    };
+
+    const isJobEmpty = (job) => {
+        return !job.JobName && !job.JobStatus && !job.JobSetupTime && !job.JobProductionTime &&
+               !job.JobSheetSetup && !job.JobSheetProduction && !job.JobSheetError;
+    };
+
+    const generateRowHTML = (job, index) => {
+        const jobName = job.JobName || 'N/A';
+        const jobStatus = job.JobStatus || 'N/A';
+        const jobStartTime = job.JobStartTime ? new Date(job.JobStartTime).toLocaleString() : 'N/A';
+        const jobEndTime = job.JobEndTime ? new Date(job.JobEndTime).toLocaleString() : 'N/A';
+        const jobSetupTime = job.JobSetupTime || 0;
+        const jobProductionTime = job.JobProductionTime || 0;
+        const jobSheetSetup = job.JobSheetSetup || 0;
+        const jobSheetProduction = job.JobSheetProduction || 0;
+        const jobSheetError = job.JobSheetError || 0;
+
+        return `
+            <td>${jobName}</td>
+            <td>${jobStatus}</td>
+            <td>${jobStartTime}</td>
+            <td>${jobEndTime}</td>
+            <td>${jobSetupTime}</td>
+            <td>${jobProductionTime}</td>
+            <td>${jobSheetSetup.toLocaleString('de-DE')}</td>
+            <td>${jobSheetProduction.toLocaleString('de-DE')}</td>
+            <td>${jobSheetError.toLocaleString('de-DE')}</td>
+            <td>
+                <button class="generate-pdf" data-index="${index}" title="Generate PDF">
+                    <i class="fas fa-file-pdf"></i>
+                </button>
+                <button class="generate-xml" data-index="${index}" title="Generate XML">
+                    <i class="fas fa-file-code"></i>
+                </button>
+            </td>
+        `;
+    };
+
+    const addEventListeners = (jobs) => {
+        document.querySelectorAll('.generate-pdf').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const index = event.currentTarget.getAttribute('data-index');
+                const job = jobs[index];
+                if (job) generatePDF(job);
+            });
+        });
+
+        document.querySelectorAll('.generate-xml').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const index = event.currentTarget.getAttribute('data-index');
+                const job = jobs[index];
+                if (job) generateXML(job);
+            });
+        });
+    };
 
     const generatePDF = (job) => {
         const { jsPDF } = window.jspdf;
@@ -144,8 +106,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         doc.setFontSize(12);
         doc.text(`Job Name: ${job.JobName || 'N/A'}`, 10, 20);
-        doc.text(`Start Time: ${new Date(job.JobStartTime).toLocaleString()}`, 10, 30);
-        doc.text(`End Time: ${new Date(job.JobEndTime).toLocaleString()}`, 10, 40);
+        doc.text(`Start Time: ${job.JobStartTime ? new Date(job.JobStartTime).toLocaleString() : 'N/A'}`, 10, 30);
+        doc.text(`End Time: ${job.JobEndTime ? new Date(job.JobEndTime).toLocaleString() : 'N/A'}`, 10, 40);
         doc.text(`Setup Time: ${job.JobSetupTime || 0} min`, 10, 50);
         doc.text(`Production Time: ${job.JobProductionTime || 0} min`, 10, 60);
         doc.text(`Sheets Setup: ${job.JobSheetSetup || 0}`, 10, 70);
@@ -159,8 +121,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const xmlContent = `
 <Job>
     <JobName>${job.JobName || 'N/A'}</JobName>
-    <JobStartTime>${job.JobStartTime}</JobStartTime>
-    <JobEndTime>${job.JobEndTime}</JobEndTime>
+    <JobStartTime>${job.JobStartTime || 'N/A'}</JobStartTime>
+    <JobEndTime>${job.JobEndTime || 'N/A'}</JobEndTime>
     <JobSetupTime>${job.JobSetupTime || 0}</JobSetupTime>
     <JobProductionTime>${job.JobProductionTime || 0}</JobProductionTime>
     <JobSheetSetup>${job.JobSheetSetup || 0}</JobSheetSetup>
