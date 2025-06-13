@@ -1,90 +1,95 @@
 # JSON Test Web Application
 
-This is a web application that demonstrates fetching and displaying JSON data from a server. It includes dynamic visualizations such as a speed gauge and a progress bar, which adapt based on the machine's state. Additionally, it now includes a new page for displaying job data dynamically fetched from a server and generating PDFs and XML files for individual jobs.
+This is a professional web application that fetches and displays real-time machine and job data from a server. It features dynamic visualizations including speed gauge, progress bars, and comprehensive job management with PDF and XML export capabilities.
 
 ## Project Structure
 
 ```
-JSONTestTOmronWeb
+JSONTestOmronWeb
 ├── src
-│   ├── index.html        # Main HTML document
-│   ├── jobs.html         # New page for displaying job data
+│   ├── index.html        # Main dashboard with machine overview
+│   ├── jobs.html         # Job overview and management page
 │   ├── styles
-│   │   └── style.css     # Styles for the web application
+│   │   └── style.css     # Unified styles for the application
 │   └── scripts
-│       ├── app.js        # JavaScript code for the main dashboard
-│       └── jobs.js       # JavaScript code for the job overview page
-├── package.json          # npm configuration file
-├── .gitignore            # Files and directories to ignore by Git
+│       ├── app.js        # Dashboard functionality and real-time updates
+│       ├── jobs.js       # Job management and export functions
+│       └── fontSizeControl.js # Dynamic font size adjustment
+├── package.json          # npm configuration and dependencies
+├── .gitignore            # Git ignore rules
 └── README.md             # Project documentation
 ```
 
 ## Features
 
-- **Overview and Performance**:
-  - Displays an overview of the machine's status, speed, and job progress.
-  - Includes a speed gauge and a progress bar for visualizing machine performance.
+### Dashboard (index.html)
+- **Real-time Machine Monitoring**:
+  - Machine status, type, and number display
+  - Speed monitoring (m/min) - conditionally displayed for FlexFold52 machines
+  - Production speed in sheets/pieces per hour
+  - Total sheet counter with formatted numbers
 
-- **Job Overview**:
-  - A new page (`jobs.html`) dynamically fetches job data from a server and displays it in a table.
-  - Users can load job data by clicking a button, and the table updates dynamically.
-  - Each job row includes buttons to generate a PDF or XML file with the job's details.
+- **Job Progress Tracking**:
+  - Dynamic progress bar showing completion percentage
+  - Remaining time calculation based on production speed
+  - Efficiency percentage calculation
 
-- **PDF Generation**:
-  - Users can generate a PDF for each job by clicking the "Generate PDF" button in the corresponding row.
-  - The PDF includes all relevant job details, such as job name, start and end times, setup time, production time, and sheet statistics.
+- **Responsive Design**:
+  - Grid layout that adapts to different screen sizes
+  - Professional styling with KAMA branding
 
-- **XML Generation**:
-  - Users can generate an XML file for each job by clicking the "Generate XML" button in the corresponding row.
-  - The XML file includes all relevant job details in a structured format.
+### Job Overview (jobs.html)
+- **Dynamic Job Table**:
+  - Load jobs on demand with a single button click
+  - Display comprehensive job information including:
+    - Job name and status
+    - Start and end times with proper date formatting
+    - Setup and production times
+    - Sheet statistics (setup, produced, errors)
+  
+- **Export Capabilities**:
+  - Generate PDF reports for individual jobs
+  - Export job data as XML files
+  - Font Awesome icons for intuitive UI
 
-- **Error Handling**:
-  - If an error occurs while fetching data, fallback messages are displayed, and the application logs the error for debugging.
-
-- **Dynamic Updates**:
-  - The application fetches data from the server every second (for the dashboard) and updates the visualizations dynamically.
+### Accessibility Features
+- **Dynamic Font Size Control**:
+  - Increase/decrease font sizes globally
+  - Maintains proportional scaling across all elements
+  - User-friendly A+/A- buttons
 
 ## Example JSON Responses
 
-### State: `all`
+### Machine State (`?state=machine`)
 ```json
 {
   "MachineNumber": "18-25-004",
+  "MachineType": "FlexFold52",
+  "MachineStatus": "Running",
   "MachineSpeed": 154,
-  "ProductionSpeed": 44000,
-  "JobState": "Production",
-  "JobID": 54,
+  "MachineSheetCounter": 1234567,
+  "JobSpeed": 44000,
   "JobName": "TestJob001",
-  "JobSheetCounter": 10000,
-  "SheetCounter": 6239,
-  "SheetErrorCounter": 3379,
-  "TIME": "2025-03-21T15:42:40.795Z"
+  "JobSheet": 50000,
+  "JobSheetCounter": 25000,
+  "JobSheetErrorCounter": 150
 }
 ```
 
-### State: `job`
+### Job State (`?state=job`)
 ```json
 {
   "Jobs": [
     {
-      "JobName": "test01",
-      "JobStartTime": "2025-04-07T15:19:12.171Z",
-      "JobEndTime": "2025-04-07T15:19:12.171Z",
-      "JobSetupTime": 5,
-      "JobProductionTime": 12,
-      "JobSheetSetup": 20,
-      "JobSheetProduction": 11000,
-      "JobSheetError": 10
-    },
-    {
-      "JobName": "",
-      "JobStartTime": "1970-01-01T00:00:00.000Z",
-      "JobEndTime": "1970-01-01T00:00:00.000Z",
-      "JobSetupTime": 0,
-      "JobProductionTime": 0,
-      "JobSheetSetup": 0,
-      "JobSheetProduction": 0,
-      "JobSheetError": 0
+      "JobName": "Production_Order_001",
+      "JobStatus": "Completed",
+      "JobStartTime": "2025-06-13T08:00:00.000Z",
+      "JobEndTime": "2025-06-13T16:30:00.000Z",
+      "JobSetupTime": 45,
+      "JobProductionTime": 465,
+      "JobSheetSetup": 250,
+      "JobSheetProduction": 48500,
+      "JobSheetError": 125
     }
   ]
 }
@@ -92,85 +97,112 @@ JSONTestTOmronWeb
 
 ## Getting Started
 
-To get started with this project, follow these steps:
+### Prerequisites
+- Node.js and npm installed
+- Modern web browser (Chrome, Firefox, Safari, Edge)
+- Network access to the API server (192.168.250.1:8080)
+
+### Installation
 
 1. **Clone the repository**:
    ```bash
    git clone <repository-url>
+   cd JSONTestOmronWeb
    ```
 
-2. **Navigate to the project directory**:
-   ```bash
-   cd JSONTestTOmronWeb
-   ```
-
-3. **Install dependencies**:
+2. **Install dependencies**:
    ```bash
    npm install
    ```
 
-4. **Run the application**:
-   Open `src/index.html` in your web browser to view the main dashboard or `src/jobs.html` to view the job overview.
-
-## Running a Local Web Server
-
-To run this project locally, you can use Python to start a simple HTTP server:
-
-1. **Navigate to the `src` directory**:
+3. **Start the development server**:
    ```bash
-   cd src
+   npm start
    ```
 
-2. **Start the web server**:
-   - For Python 3:
-     ```bash
-     python -m http.server 8000
-     ```
-   - For Python 2:
-     ```bash
-     python -m SimpleHTTPServer 8000
-     ```
-
-3. **Access the application**:
-   Open your browser and go to `http://localhost:8000`.
-
-This will serve the project files locally, allowing you to test the application in your browser.
+4. **Access the application**:
+   - Dashboard: `http://localhost:8080`
+   - Jobs: `http://localhost:8080/jobs.html`
 
 ## Usage
 
-1. **View Overview and Performance**:
-   - Open `index.html` to view the machine's status, speed, and job progress.
+### Dashboard Operations
+1. **Monitor Machine Status**:
+   - View real-time updates of machine parameters
+   - Track production progress with visual indicators
+   - Monitor efficiency metrics
 
-2. **View Job Overview**:
-   - Open `jobs.html` to view job data dynamically fetched from the server.
-   - Click the "Load Jobs" button to fetch and display job data in a table.
+2. **Speed Display Logic**:
+   - Speed info box only visible for FlexFold52 machines
+   - Automatic unit conversion (pieces vs sheets)
 
-3. **Generate PDFs**:
-   - In the `jobs.html` table, click the "Generate PDF" button in any row to download a PDF with the job's details.
+### Job Management
+1. **Load Job Data**:
+   - Click "Load Jobs" button to fetch current job data
+   - Table automatically populates with valid jobs
+   - Empty jobs are filtered out automatically
 
-4. **Generate XML Files**:
-   - In the `jobs.html` table, click the "Generate XML" button in any row to download an XML file with the job's details.
+2. **Export Functions**:
+   - **PDF**: Click the PDF icon to generate a detailed job report
+   - **XML**: Click the XML icon to export job data in structured format
 
-5. **Error Handling**:
-   - If an error occurs (e.g., the server is unreachable), fallback messages will be displayed, and errors will be logged in the console.
+### Font Size Adjustment
+- Use A+ button to increase font size by 10%
+- Use A- button to decrease font size by 10%
+- Changes apply globally to all text elements
 
-## Recent Changes
+## Recent Updates
 
-- **Added `jobs.html`**:
-  - A new page for displaying job data dynamically fetched from a server.
-  - Includes a button to load job data and a table to display the results.
+### Code Optimization
+- **Modularized JavaScript**:
+  - Separated concerns into distinct functions
+  - Improved error handling and fallback mechanisms
+  - Added async/await for better readability
 
-- **Added PDF and XML Generation**:
-  - Each job row in the `jobs.html` table includes "Generate PDF" and "Generate XML" buttons.
-  - PDFs and XML files include all relevant job details, such as job name, start and end times, setup time, production time, and sheet statistics.
+- **CSS Cleanup**:
+  - Removed unused styles
+  - Organized styles by component
+  - Added responsive design improvements
 
-- **Updated JavaScript**:
-  - Added `jobs.js` to handle fetching and displaying job data.
-  - Enhanced error handling for server and JSON processing errors.
+### Enhanced Features
+- **Conditional UI Elements**:
+  - Speed display based on machine type
+  - Dynamic unit labeling (pieces/sheets)
 
-- **Improved Error Handling**:
-  - Added fallback messages for missing or invalid data (e.g., machine status, job data).
+- **Improved Data Formatting**:
+  - German locale number formatting
+  - Proper date/time localization
+  - Percentage calculations with rounding
+
+### Error Handling
+- Graceful degradation for missing data
+- User-friendly error messages
+- Console logging for debugging
+
+## API Endpoints
+
+- **Machine State**: `http://192.168.250.1:8080?state=machine`
+- **Job State**: `http://192.168.250.1:8080?state=job`
+
+## Browser Compatibility
+
+- Chrome 90+
+- Firefox 88+
+- Safari 14+
+- Edge 90+
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Support
+
+For issues or questions, please contact the development team or create an issue in the repository.
